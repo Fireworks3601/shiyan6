@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>这船代</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f9f9f9;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 640px;
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+        }
+
+        .header, .promotion-banner, .bottom-banner {
+            padding: 15px;
+            text-align: center;
+        }
+
+        .header {
+            background-color: #007bff;
+            color: white;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+
+        .promotion-banner {
+            background-color: #f1f1f1;
+            color: #007bff;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        .promotion-banner:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        /* 滚动条区域样式 */
+        .scrolling-content {
+            background-color: #007bff;
+            color: white;
+            padding: 10px;
+            font-size: 1.2em;
+            text-align: center;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .scrolling-content p {
+            display: inline-block;
+            animation: scroll-text 10s linear infinite;
+        }
+
+        @keyframes scroll-text {
+            0% {
+                transform: translateX(100%);
+            }
+            100% {
+                transform: translateX(-100%);
+            }
+        }
+
+        .order-section, .reviews-section {
+            padding: 20px;
+        }
+
+        .order-item {
+            display: flex;
+            align-items: center;
+            background-color: #f3f3f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .order-item:hover {
+            transform: scale(1.02);
+        }
+
+        .order-item img {
+            width: 50px;
+            height: 50px;
+            border-radius: 5px;
+            margin-right: 15px;
+        }
+
+        .order-details {
+            flex: 1;
+        }
+
+        .order-details h3 {
+            font-size: 1em;
+            color: #333;
+        }
+
+        .order-details p {
+            color: #777;
+            font-size: 0.9em;
+        }
+
+        .price {
+            font-size: 1.2em;
+            color: #e60023;
+            font-weight: bold;
+        }
+
+        .review-item {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 10px 0;
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .review-item h4 {
+            font-size: 1em;
+            color: #333;
+        }
+
+        .review-item p {
+            color: #777;
+            font-size: 0.9em;
+        }
+
+        .bottom-banner {
+            background-color: #007bff;
+            color: white;
+            font-size: 1em;
+            cursor: pointer;
+        }
+
+        .bottom-banner:hover {
+            background-color: #0056b3;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-around;
+            padding: 15px;
+            background-color: #ffffff;
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            border-top: 1px solid #ddd;
+        }
+
+        .nav-item {
+            text-align: center;
+            font-size: 0.8em;
+            color: #666;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            color: #007bff;
+        }
+
+        .warning-banner {
+            background-color: #ffcc00;
+            color: #e60023;
+            font-size: 1em;
+            padding: 15px;
+            margin-top: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        .warning-banner img {
+            width: 40px;
+            height: 40px;
+            margin-right: 10px;
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 640px) {
+            .search-bar input {
+                width: 60%;
+            }
+
+            .order-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .order-item img {
+                margin-bottom: 10px;
+            }
+
+            .order-section, .reviews-section, .promotion-banner, .bottom-banner {
+                padding: 10px;
+            }
+
+            .price {
+                font-size: 1.1em;
+            }
+        }
+
+        /* 新增：订单项的淡入动画 */
+        .order-item {
+            display: flex;
+            align-items: center;
+            background-color: #f3f3f3;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            cursor: pointer;
+            transition: transform 0.2s; 
+            opacity: 0; 
+            animation: fadeInOrder 1s forwards; 
+            transform: translateY(20px); 
+        }
+
+        .order-item:nth-child(1) {
+            animation-delay: 0s;
+        }
+
+        .order-item:nth-child(2) {
+            animation-delay: 0.3s;
+        }
+
+        .order-item:nth-child(3) {
+            animation-delay: 0.6s;
+        }
+
+        /* 定义订单项的淡入动画 */
+        @keyframes fadeInOrder {
+            0% {
+                opacity: 0; /*元素完全透明，看不见*/
+                transform: translateY(20px); /*元素向下偏移了 20 像素*/
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* 鼠标悬停时的缩放和阴影效果 */
+        .order-item:hover {
+            transform: scale(1.05); /* 放大 */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); /* 增加阴影 */
+            transition: transform 0.3s ease, box-shadow 0.3s ease; /* 平滑过渡 */
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">这船代</div>
+
+    <!-- 滚动条内容区域 -->
+    <div class="scrolling-content">
+        <p>🎉 限时优惠：新用户首单立减 ¥50，邀请好友更有机会获得大额红包，快来体验吧！🎉</p>
+    </div>
+
+    <!-- 添加图片切换区域 -->
+    <div class="image-toggle-container" style="text-align: center; padding: 20px;">
+        <img id="toggleImage" src="photo/qq_pic_merged_1734431141214.jpg" alt="可切换图片" style="max-width: 100%; cursor: pointer;">
+    </div>
+
+    <div class="order-section">
+        <h2>订单专区</h2>
+        <div class="order-item" onclick="window.location.href='ex1.html'">
+            <img src="photo/183946337.jpg" alt="游戏图标">
+            <div class="order-details">
+                <h3>钱多好打</h3>
+                <p>王者低星肥单，适合新手</p>
+            </div>
+        </div>
+        <div class="order-item" onclick="window.location.href='ex2.html'">
+            <img src="photo/R.jpg" alt="游戏图标">
+            <div class="order-details">
+                <h3>高星高价</h3>
+                <p>王者高星挑战，大神收益</p>
+            </div>
+        </div>
+        <div class="order-item" onclick="window.location.href='ex3.html'">
+            <img src="photo/e90f4cbf9bd7f0c956e673b99ee4131e_preview_mid.jpg" alt="游戏图标">
+            <div class="order-details">
+                <h3>战力专区</h3>
+                <p>绝活战力大师，迅速上分</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="reviews-section">
+        <h2>用户评价</h2>
+        <div class="review-item">
+            <h4>浙传第一帅</h4>
+            <p>代练非常专业，星星涨得很快，推荐！</p>
+        </div>
+        <div class="review-item">
+            <h4>十八爱看烟花</h4>
+            <p>服务态度很好，客服响应快，五星好评。</p>
+        </div>
+        <div class="review-item">
+            <h4>落魄而已</h4>
+            <p>价格合理，上分效果很不错，值得信赖！</p>
+        </div>
+    </div>
+
+</div>
+
+<div class="navigation">
+    <div class="nav-item" id="homeLink">首页</div>
+    <div class="nav-item" id="orderHallLink">接单大厅</div>
+    <div class="nav-item" id="ordersLink">我的订单</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    // 使用jQuery进行操作
+    $(document).ready(function() {
+        // 导航跳转
+        $('#homeLink').click(function() {
+            window.location.href = "index.html";
+        });
+
+        $('#orderHallLink').click(function() {
+            window.location.href = "exo.html";
+        });
+
+        $('#ordersLink').click(function() {
+            window.location.href = "order.html";
+        });
+
+
+
+        // 切换图片
+        $('#toggleImage').click(function() {
+            var currentSrc = $(this).attr('src');
+            if (currentSrc.endsWith('photo/qq_pic_merged_1734431188880.jpg')) {
+                $(this).attr('src', 'photo/qq_pic_merged_1734431141214.jpg');
+            } else {
+                $(this).attr('src', 'photo/qq_pic_merged_1734431188880.jpg');
+            }
+        });
+    });
+</script>
+
+</body>
+</html>

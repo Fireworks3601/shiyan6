@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=640, height=1030, initial-scale=1.0, user-scalable=no">
+    <title>商品详情</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background: #ffffff;
+            display: flex;
+            flex-direction: column;
+            width: 640px;
+            height: 1030px;
+            box-sizing: border-box;
+            padding: 15px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333333;
+            height: 10%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .price-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 10%;
+            margin-bottom: 5px;
+        }
+
+        .price {
+            font-size: 30px;
+            color: #e60012;
+            font-weight: bold;
+        }
+
+        .time {
+            font-size: 14px;
+            color: #666666;
+        }
+
+        .details {
+            font-size: 14px;
+            color: #666666;
+            height: 15%;
+            display: flex;
+            align-items: center;
+            line-height: 1.5;
+        }
+
+        .requirements-title {
+            background: #ffe6e6;
+            color: #b22222;
+            font-size: 16px;
+            font-weight: bold;
+            padding: 10px;
+            height: 8%;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+        }
+
+        .requirements-list {
+            font-size: 14px;
+            color: #333333;
+            line-height: 1.6;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 5px;
+            height: 32%;
+            overflow-y: auto;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: space-between;
+            height: 10%;
+            margin-top: 10px;
+        }
+
+        .buttons button {
+            width: 48%;
+            padding: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-follow {
+            background-color: #f0f0f0;
+            color: #333333;
+        }
+
+        .btn-grab {
+            background-color: #e60012;
+            color: #ffffff;
+        }
+
+        .success-message {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            color: green;
+            font-weight: bold;
+        }
+
+        .btn-grab.disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header" id="header">加载中...</div>
+        <div class="price-section">
+            <div class="price" id="price">加载中...</div>
+            <div class="time" id="time">加载中...</div>
+        </div>
+        <div class="details" id="details">加载中...</div>
+        <div class="requirements-title">代练要求</div>
+        <div class="requirements-list" id="requirements">加载中...</div>
+        <div class="buttons">
+            <button class="btn-follow">跟发</button>
+            <button class="btn-grab" id="grabButton" onclick="grabOrder()">立即抢单</button>
+        </div>
+        <div id="successMessage" class="success-message"></div>
+    </div>
+
+    <script>
+        // 模拟数据库
+        const database = [
+            {
+                header: "吕布战力 6562分-8000分 当前最强王者-0星 铭文150 巅峰赛1696分",
+                price: "¥500.00",
+                time: "65小时需求时间",
+                details: "订单编号：551735379649722013904001\n所在区服：王者荣耀/安卓/QQ区\n发布时间：2024-12-28 21:28:35",
+                requirements: [
+                    "根据国家相关法律和政策要求，未成年人禁止接单！",
+                    "接单后1小时内开打，开打前请提供首图（战区战力排行榜）结单提供结单截图。",
+                    "战力订单不可掉账号现有段位。如号主同意卡分，也需要结单前打回至原段位。",
+                    "期间不可使用账号道具，不要联系或回复好友信息。",
+                    "接单后不可联系账号主透露订单信息或者私下交易。",
+                    "切勿使用外挂，不允许打广告、挂机、恶意毁号等恶意行为。"
+                ]
+            },
+            {
+                header: "关羽战力 5500分-7500分 当前最强王者-2星 铭文150 巅峰赛1400分",
+                price: "¥400.00",
+                time: "60小时需求时间",
+                details: "订单编号：559876543218903000004567\n所在区服：王者荣耀/苹果/QQ区\n发布时间：2024-12-28 20:00:00",
+                requirements: [
+                    "根据国家相关法律和政策要求，未成年人禁止接单！",
+                    "接单后1小时内开打，开打前请提供首图（战区战力排行榜）结单提供结单截图。",
+                    "战力订单不可掉账号现有段位。如号主同意卡分，也需要结单前打回至原段位。",
+                    "期间不可使用账号道具，不要联系或回复好友信息。",
+                    "接单后不可联系账号主透露订单信息或者私下交易。",
+                    "切勿使用外挂，不允许打广告、挂机、恶意毁号等恶意行为。"
+                ]
+            },
+            {
+                header: "镜战力 5500分-12000分 当前最强王者-6星 铭文150 巅峰赛1560分",
+                price: "¥1500.00",
+                time: "100小时需求时间",
+                details: "订单编号：559825698475752484554567\n所在区服：王者荣耀/安卓/QQ区\n发布时间：2024-12-29 22:30:00",
+                requirements: [
+                    "根据国家相关法律和政策要求，未成年人禁止接单！",
+                    "接单后1小时内开打，开打前请提供首图（战区战力排行榜）结单提供结单截图。",
+                    "战力订单不可掉账号现有段位。如号主同意卡分，也需要结单前打回至原段位。",
+                    "期间不可使用账号道具，不要联系或回复好友信息。",
+                    "接单后不可联系账号主透露订单信息或者私下交易。",
+                    "切勿使用外挂，不允许打广告、挂机、恶意毁号等恶意行为。"
+                ]
+            },
+            
+
+        ];
+        let selectedOrder;
+
+        function loadRandomData() {
+            const randomIndex = Math.floor(Math.random() * database.length);
+            selectedOrder = database[randomIndex];
+
+            document.getElementById("header").innerText = selectedOrder.header;
+            document.getElementById("price").innerText = selectedOrder.price;
+            document.getElementById("time").innerText = selectedOrder.time;
+            document.getElementById("details").innerText = selectedOrder.details;
+
+            const requirementsHTML = selectedOrder.requirements
+                .map(req => `<p>${req}</p>`)
+                .join("");
+            document.getElementById("requirements").innerHTML = requirementsHTML;
+        }
+
+        function grabOrder() {
+            const grabButton = document.getElementById("grabButton");
+            grabButton.classList.add("disabled");
+            grabButton.innerText = "抢单成功";
+            document.getElementById("successMessage").innerText = "抢单成功！请等待处理。";
+            localStorage.setItem("grabbedOrder", JSON.stringify(selectedOrder));
+            setTimeout(() => {
+                window.location.href = "order.html";
+            }, 2000);
+        }
+
+        window.onload = loadRandomData;
+    </script>
+</body>
+</html>
